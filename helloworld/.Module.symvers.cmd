@@ -1,1 +1,0 @@
-savedcmd_/home/sid/develop/anant/summer-tasks/helloworld/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/sid/develop/anant/summer-tasks/helloworld/Module.symvers -T /home/sid/develop/anant/summer-tasks/helloworld/modules.order -i Module.symvers -e 

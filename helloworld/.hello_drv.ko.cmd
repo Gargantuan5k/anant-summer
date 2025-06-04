@@ -1,1 +1,0 @@
-savedcmd_/home/sid/develop/anant/summer-tasks/helloworld/hello_drv.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T scripts/module.lds -o /home/sid/develop/anant/summer-tasks/helloworld/hello_drv.ko /home/sid/develop/anant/summer-tasks/helloworld/hello_drv.o /home/sid/develop/anant/summer-tasks/helloworld/hello_drv.mod.o
