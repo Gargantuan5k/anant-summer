@@ -1,0 +1,7 @@
+*.cmd
+*.k*
+*.o*
+*.m*
+*.s*
+/.vscode
+test.c
