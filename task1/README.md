@@ -7,6 +7,12 @@
 ## Building and running
 **Ensure you have linux kernel headers installed.**
 
+If you do not have Linux Kernel headers on your system, you may install them for your particular kernel version using a package manager. On Debian/Ubuntu (adnd derivative) systems, the command is
+
+```bash
+sudo apt install linux-headers-$(uname -r)
+```
+
 Then in the directory where `pid_csw.c` and `Makefile` are located, run
 
 ```bash
@@ -55,4 +61,11 @@ When we query the number of context switches in the exit function, the count inc
 - Any switches that occurred before the module was inserted (**because `insmod` performs a bunch of tasks before it calls the `module_init` function**)
 - Any switches during or after the init function
 - Any that happened in the exit function
+
+## Resources Used
+1. [Linux Device Drivers (3rd edition)](https://lwn.net/Kernel/LDD3/)
+2. [GFG Article on Context Switching](https://www.geeksforgeeks.org/context-switch-in-operating-system/)
+3. [Reference on the `task_struct` Struct](https://docs.huihoo.com/doxygen/linux/kernel/3.7/structtask__struct.html#a6f8e491cf1d80eb127fe0c10ebbfc659)
+4. [Voluntary and involuntary context switches - Unix StackExchange](https://unix.stackexchange.com/questions/442969/what-exactly-are-voluntary-context-switches)
+
 
