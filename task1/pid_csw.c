@@ -2,7 +2,6 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/delay.h>
-// #include <sched.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Siddharth Vivek");
@@ -10,15 +9,15 @@ MODULE_DESCRIPTION("A basic module that prints the parent process ID and the num
 
 static int __init drv_init(void)
 {
-    struct task_struct *ts = current;
-
     if (current->parent)
     {
-        printk(KERN_INFO "loaded by parent with ID: %d\n", current->parent->pid);
+        msleep(10);
+        printk("csw Before pid printing: %lu\n", current->nvcsw + current->nivcsw);
+        printk(KERN_INFO "current process '%s' (PID %d) loaded by parent process '%s' (PID %d)\n", current->comm, current->pid, current->parent->comm, current->parent->pid);
     }
     else
     {
-        printk(KERN_ERR "could not get parent PID\n");
+        printk(KERN_ERR "could not get parent info\n");
         return 1;
     }
 
@@ -27,7 +26,6 @@ static int __init drv_init(void)
 
 static void __exit drv_exit(void)
 {
-    struct task_struct *ts = current;
     int i;
 
     for (i = 0; i < 5; i++)
@@ -36,7 +34,8 @@ static void __exit drv_exit(void)
         msleep(10);
     }
 
-    // TODO context switching thingy
+    unsigned long context_sw = current->nivcsw + current->nvcsw;
+    printk("Number of context switches: %lu (voluntary: %lu, involuntary: %lu)\n", context_sw, current->nvcsw, current->nivcsw);
 }
 
 module_init(drv_init);

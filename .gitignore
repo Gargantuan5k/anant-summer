@@ -4,3 +4,4 @@
 *.m*
 *.s*
 test.c
+.vscode
