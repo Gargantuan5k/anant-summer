@@ -87,7 +87,10 @@ void producer(int log_switch) // log_switch flag: if we want to log slot statuse
         if (log_switch)
             log_slot_statuses(fd, "PRODUCER");
 
+
+        // slot = slot % SLOT_COUNT;
         char status;
+        lseek(fd, slot, SEEK_SET); // THIS LINE IS VERY IMPORTANT THIS IS WHY THAT WEIRD STUFF HAPPENED
         read(fd, &status, 1); // read the status byte
 
         if (status == 1) // slot is full
@@ -139,6 +142,7 @@ void consumer(int log_switch)
         if (log_switch)
             log_slot_statuses(fd, "CONSUMER");
 
+        slot = slot % SLOT_COUNT;
         // read the status bbyte
         lseek(fd, slot, SEEK_SET);
         char status;
