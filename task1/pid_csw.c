@@ -26,6 +26,17 @@ static int __init drv_init(void)
 
 static void __exit drv_exit(void)
 {
+    if (current->parent)
+    {
+        // msleep(10);
+        // printk("csw Before pid printing: %lu\n", current->nvcsw + current->nivcsw);
+        printk(KERN_INFO "current process '%s' (PID %d) loaded by parent process '%s' (PID %d)\n", current->comm, current->pid, current->parent->comm, current->parent->pid);
+    }
+    else
+    {
+        printk(KERN_ERR "could not get parent info\n");
+        // return 1;
+    }
     int i;
 
     for (i = 0; i < 5; i++)
