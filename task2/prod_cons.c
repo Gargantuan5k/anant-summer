@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/wait.h>
 
 #define BUFFER_FILE "buffer.dat"
 #define SLOT_SIZE 1024         // 1024 bytes
@@ -10,6 +11,8 @@
 #define HEADER_SIZE SLOT_COUNT // 1 byte header for each slot
 #define BUFFER_SIZE (HEADER_SIZE + SLOT_COUNT * SLOT_SIZE)
 #define SLOT_OFFSET(i) (HEADER_SIZE + (i) * SLOT_SIZE) // calculate byte offset where data for ith slot begins
+
+#define TIMEOUT 30 // time for which child runs
 
 void init_buf()
 {
@@ -68,7 +71,7 @@ void log_slot_statuses(int fd, const char *label) {
 }
 
 
-void producer(int log_switch) // log_switch flag: if we want to log slot statuses in each cycle
+void producer(int log_switch, pid_t child_pid) // log_switch flag: if we want to log slot statuses in each cycle
 {
     int fd = open(BUFFER_FILE, O_RDWR);
     if (fd < 0)
@@ -82,6 +85,13 @@ void producer(int log_switch) // log_switch flag: if we want to log slot statuse
 
     while (1)
     {
+        pid_t res = waitpid(child_pid, NULL, WNOHANG);
+        if (res == child_pid)
+        {
+            printf("[Producer (PARENT)] detected Consumer (CHILD) exit. Terminating.\n");
+            break;
+        }
+
         lock_file(fd, F_WRLCK); // exclusive read/write access to fd
 
         if (log_switch)
@@ -122,6 +132,7 @@ void producer(int log_switch) // log_switch flag: if we want to log slot statuse
     }
 
     close(fd);
+    exit(0);
 }
 
 void consumer(int log_switch)
@@ -133,9 +144,11 @@ void consumer(int log_switch)
         exit(1);
     }
 
+    time_t start_time = time(NULL);
+
     int slot = 0;
 
-    while (1)
+    while (time(NULL) - start_time < TIMEOUT)
     {
         lock_file(fd, F_WRLCK); // exclusive access to consumer
 
@@ -174,8 +187,9 @@ void consumer(int log_switch)
         lock_file(fd, F_UNLCK); // release
         sleep(2); // simulating a slower consumer
     }
-
+    printf("[Consumer] Done. Terminating after %d seconds.\n", TIMEOUT);
     close(fd);
+    exit(0);
 }
 
 int main(int argc, char const *argv[])
@@ -201,7 +215,7 @@ int main(int argc, char const *argv[])
     }
     else // parent - assumed producer
     {
-        producer(log_switch);
+        producer(log_switch, pid);
     }
 
     return 0;
