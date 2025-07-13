@@ -39,6 +39,6 @@ if __name__ == "__main__":
         while True:
             os.system('clear')
             read_buffer()
-            time.sleep(1)
+            time.sleep(0.25)
     except KeyboardInterrupt:
         print("Stopped.")
