@@ -46,6 +46,12 @@ The first 4 bytes contain the "status" of each "slot" in the file. `0` means the
 4. Sleep for 2s (longer than the producer; hence we guarantee that the consumer is SLOWER)
 
 
+### Termination logic
+
+`TIMEOUT` macro is defined as 30 seconds (default).
+
+After `TIMEOUT` seconds, the child terminates. Parent uses `waitpid()` to check if child has terminated, and stops accordingly.
+
 ### `inspect_buffer.py` script:
 
 A python script that reads the buffer.dat file separately and gives a live preview of slot statuses and slot contents. Acts as a live dashboard, to be run simultaneously with the main program.
